@@ -1,0 +1,17 @@
+{
+    "name": "drupal/otp_verify",
+    "description": "This module using for make otp verify by send sms message.",
+    "type": "drupal-custom-module",
+    "version": "1.0",
+    "require": {
+        "drupal/key": "^1.0",
+        "twilio/sdk": "^6"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Mahmoud Sayed",
+            "email": "m.sayedfci@gmail.com"
+        }
+    ]
+}

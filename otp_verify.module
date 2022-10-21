@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Otp Verify module.
+ *
+ * @DCG
+ * This file is no longer required in Drupal 8.
+ * @see https://www.drupal.org/node/2217931
+ */
+
+use Drupal\user\UserInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_user_login().
+ */
+function otp_verify_user_login(UserInterface $account) {
+  $verification_code_service = \Drupal::service('otp_verify.verification_code');
+  $otp_verify_service = \Drupal::service('otp_verify.send_sms');
+  $transaction = \Drupal::database()->startTransaction();
+  try {
+    // Generate otp code.
+    $code = $verification_code_service->storeCodeInDataBase($account->id());
+    // Get verification message.
+    $message = $verification_code_service->getVerificationMessage($code);
+    $phone = $account->field_phone_number->getString();
+    if (is_null($phone)) {
+      throw new Exception(t('User do not has phone field value.'));
+    }
+    // Send sms message.
+    $isSent = $otp_verify_service->sendSmsMessage($phone, $message);
+    if ($isSent) {
+      \Drupal::messenger()->addMessage(t('Sms Message sent successfully'));
+      // Redirect to verify form.
+      $middleware = \Drupal::service('otp_verify.http_middleware');
+      $response = new RedirectResponse(Url::fromRoute('otp_verify.verify')->toString());
+      $middleware->setRedirectResponse($response);
+    }
+  }
+  catch (\Exception $ex) {
+    $transaction->rollBack();
+    \Drupal::messenger()->addError($ex->getMessage());
+  }
+  unset($transaction);
+}

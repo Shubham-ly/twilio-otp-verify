@@ -1,0 +1,15 @@
+otp_verify.verify:
+  path: '/otp-verify/verify'
+  defaults:
+    _title: 'Otp Verify'
+    _form: '\Drupal\otp_verify\Form\VerificationForm'
+  requirements:
+    _permission: 'access content'
+
+otp_verify.settings_form:
+  path: '/admin/config/system/otp-verify'
+  defaults:
+    _title: 'Otp Verify settings'
+    _form: 'Drupal\otp_verify\Form\SettingsForm'
+  requirements:
+    _permission: 'administer otp_verify configuration'

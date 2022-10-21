@@ -1,0 +1,16 @@
+services:
+    otp_verify.send_sms:
+      class: Drupal\otp_verify\Service\SmsService
+      arguments: [ "@otp_verify.twilio" ]
+
+    otp_verify.verification_code:
+      class: Drupal\otp_verify\Service\VerificationCodeService
+      arguments: [ "@database", "@current_user" ]
+
+    otp_verify.twilio:
+      class: Drupal\otp_verify\Service\Gateway\TwilioGateway
+
+    otp_verify.http_middleware:
+      class: Drupal\otp_verify\RedirectMiddleware
+      tags:
+        - { name: http_middleware }

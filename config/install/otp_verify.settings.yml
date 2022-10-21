@@ -1,0 +1,5 @@
+otp_verify:
+  sender_id: ''
+  token: ''
+  provider_number: ''
+  verification_message_text: 'Your verification code is: '
